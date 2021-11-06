@@ -1,0 +1,32 @@
+
+
+
+
+{% extends 'Home/navbar.html' %}
+
+{% block head %}
+
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Title</title>
+<link rel="stylesheet" type="text/css" href="/static/Home/home.css">
+</head>
+<body>
+
+<h1>helo</h1>
+
+<div id="form">
+<form method="post" enctype= multipart/form-data>
+    {% csrf_token %}
+    {{ form.file }}
+
+
+</form>
+</div>
+    <button type="submit"> Analyze </button>
+
+<a href = "/convert/">convert</a>
+
+</body>
+
+{% endblock %}
