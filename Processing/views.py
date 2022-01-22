@@ -153,25 +153,27 @@ from django.http import FileResponse
 
 def convert(request):
 
+    try:
+        # convert wav to mp3
+        form = ConvertForm(request.POST or None, request.FILES or None)
+        if request.method == 'POST':
+            if form.is_valid():
 
-    # convert wav to mp3
-    form = ConvertForm(request.POST or None, request.FILES or None)
-    if request.method == 'POST':
-        if form.is_valid():
+                src = request.FILES['file']
+                dst = "test.wav"
+                sound = AudioSegment.from_mp3(src)
+                sound.export(dst, format="wav")
+                file_server = pathlib.Path(os.path.abspath(dst))
+                file_to_download = open(str(file_server), 'rb')
 
-            src = request.FILES['file']
-            dst = "test.wav"
-            sound = AudioSegment.from_mp3(src)
-            sound.export(dst, format="wav")
-            file_server = pathlib.Path(os.path.abspath(dst))
-            file_to_download = open(str(file_server), 'rb')
+                response = FileResponse(file_to_download, content_type='application/force-download')
+                response['Content-Disposition'] = 'inline; filename="a_name_to_file_client_hint.wav"'
+                return response
 
-            response = FileResponse(file_to_download, content_type='application/force-download')
-            response['Content-Disposition'] = 'inline; filename="a_name_to_file_client_hint.wav"'
-            return response
-
-        else:
-            print(form.errors)
-        return redirect("/")
+            else:
+                print(form.errors)
+            return redirect("/")
+    except RuntimeError:
+        return redirect("/convert/")
     return render(request,'Home/convert_view.html',{"form":form})
 

@@ -11,7 +11,7 @@ def search(request):
     track_link = []
 
     if request.method == 'POST':
-        artist = request.body.decode('utf-8')
+        artist = request.POST['search']
         print(artist)
 
         results = sp.search(q=artist, limit=10)
@@ -22,9 +22,10 @@ def search(request):
 
             track_link.append(track['preview_url'])
 
-        print(track_name)
-
-        return render(request, "Spotify/show_view.html",{"track_name":track_name,
-                                                            "track_link":track_link})
+        track = zip(track_name,track_link)
+        print(track)
+        return render(request, "Spotify/spotify_view.html",{"track":track})
 
     return render(request,"Spotify/spotify_view.html")
+
+
